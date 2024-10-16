@@ -1,6 +1,7 @@
 import requests                # to access source code of html and store in string
 import selectorlib             # extract only particular information from source code
 from send_email import send_email
+import time
 
 URL = 'http://programmer100.pythonanywhere.com/tours/'
 HEADERS = {
@@ -34,12 +35,14 @@ def read(extracted):
         return file.read()
 
 if __name__ == '__main__':
-    scraped = scrape(URL)
-    extracted = extract(scraped)
-    print(extracted)
-    
-    content = read(extracted)
-    if extracted != 'No upcoming tours':
-        if extracted not in content:
-            store(extracted)
-            send_email(message="new event found")
+    while True:
+        scraped = scrape(URL)
+        extracted = extract(scraped)
+        print(extracted)
+        
+        content = read(extracted)
+        if extracted != 'No upcoming tours':
+            if extracted not in content:
+                store(extracted)
+                send_email(message="new event found")
+        time.sleep(2)
